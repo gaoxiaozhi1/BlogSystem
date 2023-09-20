@@ -5,5 +5,5 @@ type Logger struct {
 	Prefix       string `yaml:"prefix"`
 	Director     string `yaml:"director"`
 	ShowLine     bool   `yaml:"show_line"`      // 是否显示行号
-	LogInConsole bool   `yaml:"log_in_console"` // 是否打印路劲
+	LogInConsole bool   `yaml:"log_in_console"` // 是否打印路径
 }
