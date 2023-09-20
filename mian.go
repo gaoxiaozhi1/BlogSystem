@@ -1,23 +1,25 @@
 package main
 
 import (
-	"fmt"
 	"gvb_server/core"
 	"gvb_server/global"
+	"gvb_server/routers"
 )
 
 func main() {
 	// 读取配置文件
 	core.InitConf()
-	// 打印
-	//fmt.Println(global.Config)
 	// 初始化日志
 	global.Log = core.InitLogger()
-	global.Log.Warnln("嘻嘻嘻")
-	global.Log.Error("嘻嘻嘻")
-	global.Log.Infof("嘻嘻嘻")
-
 	// 连接数据库
 	global.DB = core.InitGorm()
-	fmt.Println(global.DB)
+
+	// 初始化路由
+	router := routers.InitRouter()
+	addr := global.Config.System.Addr()
+	global.Log.Infof("gvb_server运行在：%s", addr)
+
+	// func (engine *Engine) Run(addr ...string) (err error) 所以要弄地址
+	router.Run(addr)
+
 }
