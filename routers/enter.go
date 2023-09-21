@@ -20,6 +20,7 @@ func InitRouter() *gin.Engine {
 	// 传入路由分组
 	apiRouterGroup := router.Group("api")
 
+	// 路由分层
 	// 系统配置api
 	SettingsRouter(apiRouterGroup)
 	return router
