@@ -1,6 +1,7 @@
 package res
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -33,11 +34,16 @@ func OK(data any, msg string, c *gin.Context) {
 }
 
 func OKWithData(data any, c *gin.Context) {
+	fmt.Println("这里的东西")
 	Result(Success, data, "成功", c)
 }
 
 func OKWithMessage(msg string, c *gin.Context) {
 	Result(Success, map[string]any{}, msg, c)
+}
+
+func OKWith(c *gin.Context) {
+	Result(Success, map[string]any{}, "成功", c)
 }
 
 // 封装一些相应失败的

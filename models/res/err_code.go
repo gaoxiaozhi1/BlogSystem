@@ -5,10 +5,12 @@ type ErrorCode int // type ErrorCode int是一种类型声明。这行代码定�
 // 定义
 const (
 	SettingsError ErrorCode = 1001 // 系统错误
+	ArgumentError ErrorCode = 1002 // 参数错误
 )
 
 var (
 	ErrorMap = map[ErrorCode]string{
 		SettingsError: "系统错误",
+		ArgumentError: "参数错误",
 	}
 )
