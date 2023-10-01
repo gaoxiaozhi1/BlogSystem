@@ -8,7 +8,7 @@ import (
 // 系统路由信息
 func SettingsRouter(router *gin.RouterGroup) {
 	settingsApi := api.ApiGroupApp.SettingsApi
-	router.GET("settings", settingsApi.SettingsInfoView)
-	router.PUT("settings", settingsApi.SettingsInfoUpdateView)
+	router.GET("settings/:name", settingsApi.SettingsInfoView)
+	router.PUT("settings/:name", settingsApi.SettingsInfoUpdateView)
 
 }
