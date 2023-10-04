@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gvb_server/global"
+	"gvb_server/models"
 	"gvb_server/models/res"
 	"gvb_server/utils"
+	"io"
 	"os"
 	"path"
 	"strings"
@@ -72,6 +74,8 @@ func (ImagesApi) ImageUploadView(c *gin.Context) {
 	var resList []FileUploadResponse
 
 	for _, file := range fileList {
+		// 存数据库。。。。
+
 		// 判断图片是否存在在白名单中
 		fileName := file.Filename
 		nameList := strings.Split(fileName, ".") // 图片名字切片
@@ -84,8 +88,6 @@ func (ImagesApi) ImageUploadView(c *gin.Context) {
 			})
 			continue
 		}
-
-		// 存数据库。。。。
 
 		// 图片存储
 		filePath := path.Join(basePath, file.Filename) // 存储路径
@@ -102,9 +104,27 @@ func (ImagesApi) ImageUploadView(c *gin.Context) {
 			continue
 		}
 
-		// 上传
-		err := c.SaveUploadedFile(file, filePath)
+		fileObj, err := file.Open()
+		if err != nil {
+			global.Log.Error(err)
+		}
+		byteData, err := io.ReadAll(fileObj)
+		imageHash := utils.Md5(byteData)
+		// 去数据库中查这个图片是否存在
+		var bannerModel models.BannerModel
+		err = global.DB.Take(&bannerModel, "hash = ?", imageHash).Error
+		if err == nil {
+			// 找到了
+			resList = append(resList, FileUploadResponse{
+				FileName:  bannerModel.Path,
+				IsSuccess: false,
+				Msg:       "图片已存在",
+			})
+			continue
+		}
 
+		// 上传
+		err = c.SaveUploadedFile(file, filePath)
 		// 上传失败
 		if err != nil {
 			global.Log.Error(err)
@@ -123,6 +143,12 @@ func (ImagesApi) ImageUploadView(c *gin.Context) {
 			Msg:       "上传成功",
 		})
 
+		// 图片入库
+		global.DB.Create(&models.BannerModel{
+			Path: filePath,
+			Hash: imageHash,
+			Name: fileName,
+		})
 	}
 
 	res.OKWithData(resList, c)

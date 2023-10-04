@@ -13,6 +13,11 @@ type Response struct {
 	Msg  string `json:"msg"`
 }
 
+type ListResponse[T any] struct {
+	Count int64 `json:"count"`
+	List  T     `json:"list"`
+}
+
 // 定义一个常量，(万一前端觉得0不是成功的)
 const (
 	Success = 0 // code为0：成功
@@ -36,6 +41,13 @@ func OK(data any, msg string, c *gin.Context) {
 func OKWithData(data any, c *gin.Context) {
 	fmt.Println("这里的东西")
 	Result(Success, data, "成功", c)
+}
+
+func OKWithList(list any, count int64, c *gin.Context) {
+	OKWithData(ListResponse[any]{
+		List:  list,
+		Count: count,
+	}, c)
 }
 
 func OKWithMessage(msg string, c *gin.Context) {
