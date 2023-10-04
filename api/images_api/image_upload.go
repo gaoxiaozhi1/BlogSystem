@@ -5,8 +5,24 @@ import (
 	"github.com/gin-gonic/gin"
 	"gvb_server/global"
 	"gvb_server/models/res"
+	"gvb_server/utils"
 	"os"
 	"path"
+	"strings"
+)
+
+var (
+	// WhiteImageList 图片上传的白名单
+	WhiteImageList = []string{
+		"jpg",
+		"png",
+		"jpeg",
+		"gif",
+		"ico",
+		"tiff",
+		"svg",
+		"webp",
+	}
 )
 
 // 图片上传的响应
@@ -18,12 +34,7 @@ type FileUploadResponse struct {
 
 // 上传图片，返回图片的URL
 func (ImagesApi) ImageUploadView(c *gin.Context) {
-	// func (c *Context) MultipartForm() (*multipart.Form, error)
-	//
-	// type Form struct {
-	//	Value map[string][]string
-	//	File  map[string][]*FileHeader
-	// }
+	// 上传多个图片文件
 	form, err := c.MultipartForm()
 	if err != nil {
 		res.FailWithMessage(err.Error(), c)
@@ -49,6 +60,7 @@ func (ImagesApi) ImageUploadView(c *gin.Context) {
 		// 第二个参数os.ModePerm是一个权限位，用于设置所有被该函数创建的目录的读/写/执行权限。
 		// 在Unix-like系统中，os.ModePerm等价于07772，意味着用户有权列出、修改和搜索目录中的文件。
 		// 如果目录已经存在，os.MkdirAll()函数不会做任何事情，而是返回nil。
+		// 递归创建
 		err = os.MkdirAll(basePath, os.ModePerm)
 		if err != nil {
 			global.Log.Error(err)
@@ -56,9 +68,23 @@ func (ImagesApi) ImageUploadView(c *gin.Context) {
 	}
 
 	// 不存在就创建
+	// 图片上传结果数组
 	var resList []FileUploadResponse
 
 	for _, file := range fileList {
+		// 判断图片是否存在在白名单中
+		fileName := file.Filename
+		nameList := strings.Split(fileName, ".") // 图片名字切片
+		suffix := nameList[len(nameList)-1]      // 获取后缀名
+		if !utils.Inlist(suffix, WhiteImageList) {
+			resList = append(resList, FileUploadResponse{
+				FileName:  file.Filename,
+				IsSuccess: false,
+				Msg:       "非法文件",
+			})
+			continue
+		}
+
 		// 存数据库。。。。
 
 		// 图片存储
