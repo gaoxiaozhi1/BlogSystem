@@ -15,3 +15,8 @@ type PageInfo struct {
 	Limit int    `form:"limit"` // 限制数量,如果不设置，默认为0，就是不分页
 	Sort  string `form:"sort"`  // 排序,谁在前面谁在后面的排序
 }
+
+// 批量删除图片，通过要删除的图片的id列表来实现批量删除
+type RemoveRequest struct {
+	IDList []uint `json:"id_list"`
+}

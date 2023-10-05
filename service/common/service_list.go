@@ -19,6 +19,12 @@ func ComList[T any](model T, option Option) (list []T, count int64, err error) {
 		DB = global.DB.Session(&gorm.Session{Logger: global.MysqlLog})
 	}
 
+	// 排序设置
+	if option.Sort == "" {
+		option.Sort = "created_at desc" // 默认按照时间往前排（从后往前排）
+		//option.Sort = "created_at asc" // 默认按照时间往后排
+	}
+
 	// 查找图片数据库中的总数.RowsAffected
 	count = DB.Select("id").Find(&list).RowsAffected
 	// SELECT `id` FROM `banner_models`比
@@ -30,7 +36,7 @@ func ComList[T any](model T, option Option) (list []T, count int64, err error) {
 		offset = 0
 	}
 	// 分页查询（常用）
-	err = DB.Limit(option.Limit).Offset(offset).Find(&list).Error
+	err = DB.Limit(option.Limit).Offset(offset).Order(option.Sort).Find(&list).Error
 
 	return list, count, err
 }
