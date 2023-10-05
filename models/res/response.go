@@ -72,6 +72,7 @@ func FailWithError(err error, obj any, c *gin.Context) {
 	msg := utils.GetValidMsg(err, obj)
 	FailWithMessage(msg, c)
 }
+
 func FailWitheCode(code ErrorCode, c *gin.Context) {
 	msg, ok := ErrorMap[code]
 	if ok {
