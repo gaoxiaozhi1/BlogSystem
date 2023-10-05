@@ -3,6 +3,7 @@ package res
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"gvb_server/utils"
 	"net/http"
 )
 
@@ -24,7 +25,7 @@ const (
 	Error   = 7 // 其他错误
 )
 
-// 一些方法
+// 一些方法 ------- 返回给前端的是json数据
 func Result(code int, data any, msg string, c *gin.Context) {
 	c.JSON(http.StatusOK, Response{
 		Code: code,
@@ -64,6 +65,12 @@ func Fail(data any, msg string, c *gin.Context) {
 }
 func FailWithMessage(msg string, c *gin.Context) {
 	Result(Error, map[string]any{}, msg, c)
+}
+
+func FailWithError(err error, obj any, c *gin.Context) {
+	// 获取报错中的信息
+	msg := utils.GetValidMsg(err, obj)
+	FailWithMessage(msg, c)
 }
 func FailWitheCode(code ErrorCode, c *gin.Context) {
 	msg, ok := ErrorMap[code]
