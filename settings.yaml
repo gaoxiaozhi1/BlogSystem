@@ -47,6 +47,7 @@ qi_niu:
   bucket: fengfenfzhidao
   cdn: xx://xx.xx.com/
   zone: xx
+  prefix: "gvb"
   size: 5
 email:
   host: smtp.qq.com
