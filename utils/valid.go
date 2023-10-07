@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"reflect"
 )
@@ -15,6 +16,7 @@ func GetValidMsg(err error, obj any) string {
 		for _, e := range errs {
 			// 循环每一个错误信息
 			// 根据报错字段名，获取结构体的具体字段
+			fmt.Println(e.Error())
 			if f, exits := getObj.Elem().FieldByName(e.Field()); exits {
 				msg := f.Tag.Get("msg")
 				return msg

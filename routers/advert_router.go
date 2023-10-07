@@ -7,5 +7,8 @@ import (
 
 func AdvertRouter(router *gin.RouterGroup) {
 	app := api.ApiGroupApp.AdvertAPI
-	router.POST("adverts", app.AdvertCreate)
+	router.POST("adverts", app.AdvertCreateView)
+	router.GET("adverts", app.AdvertListView)
+	router.PUT("adverts/:id", app.AdvertUpdateView)
+	router.DELETE("adverts", app.AdvertRemoveView)
 }

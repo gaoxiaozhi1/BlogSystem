@@ -1,7 +1,6 @@
 package res
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"gvb_server/utils"
 	"net/http"
@@ -40,7 +39,6 @@ func OK(data any, msg string, c *gin.Context) {
 }
 
 func OKWithData(data any, c *gin.Context) {
-	fmt.Println("这里的东西")
 	Result(Success, data, "成功", c)
 }
 

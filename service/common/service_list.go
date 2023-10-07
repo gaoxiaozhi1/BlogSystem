@@ -15,6 +15,7 @@ type Option struct {
 // 列表页
 func ComList[T any](model T, option Option) (list []T, count int64, err error) {
 	DB := global.DB
+	// 是否看日志
 	if option.Debug {
 		DB = global.DB.Session(&gorm.Session{Logger: global.MysqlLog})
 	}
@@ -25,18 +26,20 @@ func ComList[T any](model T, option Option) (list []T, count int64, err error) {
 		//option.Sort = "created_at asc" // 默认按照时间往后排
 	}
 
+	query := DB.Where(model)
+
 	// 查找图片数据库中的总数.RowsAffected
-	count = DB.Select("id").Find(&list).RowsAffected
-	// SELECT `id` FROM `banner_models`比
-	// lobal.DB.Debug().Find(&imageList).RowsAffected的
-	// SELECT * FROM `banner_models` 好
+	count = query.Select("id").Find(&list).RowsAffected
+
+	query = DB.Where(model) // 这里的query会受上面查询的影响，需要手动复位
 
 	offset := (option.Page - 1) * option.Limit // 偏移量，就是当前是从第几页开始的
 	if offset < 0 {                            // 即cr.Page为0，那么offset为-1；
 		offset = 0
 	}
+
 	// 分页查询（常用）
-	err = DB.Limit(option.Limit).Offset(offset).Order(option.Sort).Find(&list).Error
+	err = query.Limit(option.Limit).Offset(offset).Order(option.Sort).Find(&list).Error
 
 	return list, count, err
 }
