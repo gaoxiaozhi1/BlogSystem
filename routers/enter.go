@@ -26,7 +26,8 @@ func InitRouter() *gin.Engine {
 
 	// 路由分层
 	SettingsRouter(apiRouterGroup) // 系统配置api
-	//ImagesRouter(apiRouterGroup)   // 图片管理api
-	AdvertRouter(apiRouterGroup) // 广告管理api
+	ImagesRouter(apiRouterGroup)   // 图片管理api
+	AdvertRouter(apiRouterGroup)   // 广告管理api
+	MenuRouter(apiRouterGroup)     // 菜单管理api
 	return router
 }
