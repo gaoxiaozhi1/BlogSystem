@@ -32,7 +32,9 @@ func (MenuApi) MenuListView(c *gin.Context) {
 	var menus []MenuResponse
 	for _, model := range menuList {
 		// model 就是一个菜单, 查找当前菜单对应的图片列表
-		var banners []Banner
+		//var banners []Banner // 引用数据类型，如果声明了但是没有赋值等价于nil,前端得到的数据会显示null
+		// 修改后的代码:
+		var banners = make([]Banner, 0) // 分配一个长度为0的地址
 		for _, banner := range menuBanners {
 			if banner.MenuID == model.ID {
 				banners = append(banners, Banner{

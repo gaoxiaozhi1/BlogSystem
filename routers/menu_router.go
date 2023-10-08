@@ -10,4 +10,5 @@ func MenuRouter(router *gin.RouterGroup) {
 	router.POST("menus", app.MenuCreateView)
 	router.GET("menus", app.MenuListView)
 	router.GET("menu_names", app.MenuNameListView)
+	router.PUT("menus/:id", app.MenuUpdateView)
 }
