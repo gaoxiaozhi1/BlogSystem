@@ -32,7 +32,7 @@ func IsWebStop(option Option) bool {
 	if option.DB {
 		return true
 	}
-	return true // 默认返回这个,因为运行完命令之后都是需要停止web项目的，所以这里可以改成true
+	return false // 默认返回这个
 }
 
 // SwitchOption 根据命令执行不同的函数
@@ -50,5 +50,5 @@ func SwitchOption(option Option) {
 	}
 
 	// 不符合上面的任意一种情况，那就显示，类似于提示帮助
-	sys_flag.Usage()
+	//sys_flag.Usage()
 }

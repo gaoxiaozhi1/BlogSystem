@@ -20,21 +20,21 @@ func CreateUser(permissions string) {
 		rePassword string
 		email      string
 	)
-	fmt.Printf("请输入用户名")
+	fmt.Printf("请输入用户名:")
 	fmt.Scan(&userName)
-	fmt.Printf("请输入昵称")
+	fmt.Printf("请输入昵称:")
 	fmt.Scan(&nickName)
-	fmt.Printf("请输入密码")
+	fmt.Printf("请输入密码:")
 	fmt.Scan(&password)
-	fmt.Printf("请再次输入密码")
+	fmt.Printf("请再次输入密码:")
 	fmt.Scan(&rePassword)
-	fmt.Printf("请输入邮箱")
+	fmt.Printf("请输入邮箱:")
 	fmt.Scan(&email) // 不用必须输入;因为Scanln问题，所以还是改成必填的Scan
 
 	// 判断用户名是否存在
 	var userModel models.UserModel
 	err := global.DB.Find(&userModel, "user_name = ?", userName).Error
-	if err == nil {
+	if err != nil {
 		// 存在
 		global.Log.Error("用户名已存在，请重新输入")
 		return

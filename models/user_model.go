@@ -1,13 +1,11 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"gvb_server/models/ctype"
 )
 
 // 用户表UserModel
 type UserModel struct {
-	gorm.Model
 	MODEL
 	NickName string     `gorm:"size:36" json:"nick_name"`     // 昵称
 	UserName string     `gorm:"size:36" json:"user_name"`     // 用户名
