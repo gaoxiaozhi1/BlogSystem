@@ -33,8 +33,8 @@ func CreateUser(permissions string) {
 
 	// 判断用户名是否存在
 	var userModel models.UserModel
-	err := global.DB.Find(&userModel, "user_name = ?", userName).Error
-	if err != nil {
+	err := global.DB.Take(&userModel, "user_name = ?", userName).Error
+	if err == nil {
 		// 存在
 		global.Log.Error("用户名已存在，请重新输入")
 		return
