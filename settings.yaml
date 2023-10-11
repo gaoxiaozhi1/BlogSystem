@@ -61,3 +61,8 @@ jwy:
   secret: ""
   expires: 2 #过期时间
   issuer: ""
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: "123456"
+  pool_size: 100

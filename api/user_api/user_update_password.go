@@ -49,8 +49,4 @@ func (UserApi) UserUpdatePasswordView(c *gin.Context) {
 	}
 	res.OKWithMessage("密码修改成功", c)
 	return
-
-	// 需要注销原本的jwt，这个jwt不是服务端生成的
-	// 注销逻辑：
-	// 如果用户注销了jwt，那么下次用户再带着这个jwt的时候，就不能让他通过啦
 }
