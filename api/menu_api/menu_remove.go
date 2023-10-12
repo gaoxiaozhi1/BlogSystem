@@ -18,8 +18,8 @@ func (MenuApi) MenuRemoveView(c *gin.Context) {
 	}
 
 	// 先从数据库中查询对应的信息
-	var menutList []models.MenuModel
-	count := global.DB.Find(&menutList, cr.IDList).RowsAffected
+	var menuList []models.MenuModel
+	count := global.DB.Find(&menuList, cr.IDList).RowsAffected
 	if count == 0 {
 		res.OKWithMessage("菜单不存在", c)
 		return
@@ -29,14 +29,14 @@ func (MenuApi) MenuRemoveView(c *gin.Context) {
 	// 要先删除关联的第三张表，然后删除菜单表----因为要删除两个东西，所以用事务
 	err = global.DB.Transaction(func(tx *gorm.DB) error {
 		// 删除关联的第三张表
-		err = global.DB.Model(&menutList).Association("Banners").Clear()
+		err = global.DB.Model(&menuList).Association("Banners").Clear()
 		if err != nil {
 			global.Log.Error(err)
 			return err
 		}
 
 		// 删除菜单表
-		global.DB.Delete(&menutList)
+		global.DB.Delete(&menuList)
 		if err != nil {
 			global.Log.Error(err)
 			return err

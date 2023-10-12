@@ -52,8 +52,8 @@ qi_niu:
 email:
   host: smtp.qq.com
   port: 465
-  user: xxx@qq.com
-  password: xxx
+  user: 2933756974@qq.com # 发件人的邮箱
+  password: "glmkqxqlarpddefa" # 发件人的密码,就是设置-账户-授权码
   default_form_email: ""
   use_ssl: false
   user_tls: false
