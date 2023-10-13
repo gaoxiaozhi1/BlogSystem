@@ -20,6 +20,9 @@ func InitRouter() *gin.Engine {
 	router := gin.Default()
 
 	router.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
+	// 测试请求接口，可以用于测试
+	//router.GET("/login", user_api.UserApi{}.QQLoginView)
+	// 在浏览器访问：blog.fengfengzhidao.com/login?flag=qq&code=057F987F9A27DFOD6C1E210552667A87，就会被返回code
 
 	// 传入路由分组
 	apiRouterGroup := router.Group("api")
