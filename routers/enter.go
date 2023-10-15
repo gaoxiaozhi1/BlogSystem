@@ -34,5 +34,6 @@ func InitRouter() *gin.Engine {
 	MenuRouter(apiRouterGroup)     // 菜单管理api
 	UserRouter(apiRouterGroup)     // 用户管理api
 	TagRouter(apiRouterGroup)      // 标签管理api
+	MessageRouter(apiRouterGroup)  // 消息管理api
 	return router
 }
