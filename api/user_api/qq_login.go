@@ -13,6 +13,7 @@ import (
 	"gvb_server/utils/random"
 )
 
+// QQLoginView api逻辑
 func (UserApi) QQLoginView(c *gin.Context) {
 	// 先得到code
 	code := c.Query("code")
