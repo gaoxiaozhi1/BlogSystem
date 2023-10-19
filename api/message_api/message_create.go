@@ -9,7 +9,7 @@ import (
 
 type MessageRequest struct {
 	SendUserID uint   `json:"send_user_id" binding:"required"` // 发送人id
-	RecvUserID uint   `json:"recv_user_id" binding:"required"` // 接收人id
+	RevUserID  uint   `json:"rev_user_id" binding:"required"`  // 接收人id
 	Content    string `json:"content" binding:"required"`      // 消息内容
 }
 
@@ -28,7 +28,7 @@ func (MessageApi) MessageCreateView(c *gin.Context) {
 		res.FailWithMessage("发送人信息不存在", c)
 		return
 	}
-	err = global.DB.Take(&recvUser, cr.RecvUserID).Error
+	err = global.DB.Take(&recvUser, cr.RevUserID).Error
 	if err != nil {
 		res.FailWithMessage("接收人信息不存在", c)
 		return
@@ -38,7 +38,7 @@ func (MessageApi) MessageCreateView(c *gin.Context) {
 		SendUserID:       cr.SendUserID,
 		SendUserNickName: sendUser.NickName,
 		SendUserAvatar:   sendUser.Avatar,
-		RevUserID:        cr.RecvUserID,
+		RevUserID:        cr.RevUserID,
 		RevUserNickName:  recvUser.NickName,
 		RevUserAvatar:    recvUser.Avatar,
 		IsRead:           false,

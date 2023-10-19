@@ -10,6 +10,7 @@ type Option struct {
 	User string
 	// -u admin (创建一个叫admin的管理员)
 	// -u user (创建一个叫user的用户)
+	ES string // -es create  -es delete
 }
 
 // Parse 解析命令行参数
@@ -17,12 +18,14 @@ func Parse() Option {
 	// 定义了一个名为 “db” 的命令行标志。这个标志的默认值是 false，并且它的描述是 “初始化数据库”。
 	db := sys_flag.Bool("db", false, "初始化数据库")
 	user := sys_flag.String("u", "", "创建用户")
+	es := sys_flag.String("es", "", "es操作")
 	// 解析命令行参数写入注册的flag里
 	sys_flag.Parse()
 	return Option{
 		// DB 字段被设置为 “db” 标志的值（通过 *db 解引用得到）。
 		DB:   *db, // false
 		User: *user,
+		ES:   *es,
 	}
 	// 如果你在命令行中使用 -db=true 运行你的程序，那么这个 Parse 函数将会返回 { DB: true }。
 	// 如果你没有指定 -db 标志，那么它将返回 { DB: false }，因为 false 是 “db” 标志的默认值。
@@ -59,6 +62,14 @@ func SwitchOption(option Option) {
 	// 因为如果option.User为""，那么就不会走这里，必须是个字符串
 	if option.User == "admin" || option.User == "user" {
 		CreateUser(option.User)
+		return
+	}
+	if option.ES == "create" {
+		EsCreateIndex()
+		return
+	}
+	if option.ES == "delete" {
+		EsRemoveIndex()
 		return
 	}
 

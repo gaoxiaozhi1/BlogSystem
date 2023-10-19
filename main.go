@@ -22,6 +22,8 @@ func main() {
 	global.DB = core.InitGorm()
 	// 连接redis
 	global.Redis = core.ConnectRedis()
+	// 连接es
+	global.ESClient = core.EsConnect()
 
 	// 命令行参数绑定
 	// 先迁移表结构

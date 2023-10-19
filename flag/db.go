@@ -14,7 +14,7 @@ func Makemigrations() {
 	// &models.UserModel{} 是你的用户模型，它代表了用户表。
 	// "CollectsModels" 是你的收藏模型的名字，它代表了收藏表。
 	// &models.UserCollectModel{} 是你的用户收藏模型，它代表了用户和收藏之间的联接表。
-	global.DB.SetupJoinTable(&models.UserModel{}, "CollectsModels", &models.UserCollectModel{})
+	//global.DB.SetupJoinTable(&models.UserModel{}, "CollectsModels", &models.UserCollectModel{})
 	global.DB.SetupJoinTable(&models.MenuModel{}, "Banners", &models.MenuBannerModel{})
 
 	// 这行代码使用 GORM 的 AutoMigrate 方法自动迁移表结构。
@@ -31,7 +31,7 @@ func Makemigrations() {
 			&models.AdvertModel{},
 			&models.UserModel{},
 			&models.CommentModel{},
-			&models.ArticleModel{},
+			//&models.ArticleModel{},
 			&models.MenuModel{},
 			&models.MenuBannerModel{},
 			&models.FadeBackModel{},
