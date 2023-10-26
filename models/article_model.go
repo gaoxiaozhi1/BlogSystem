@@ -14,9 +14,9 @@ type ArticleModel struct {
 	CreatedAt string `json:"date"`       // 创建时间
 	UpdatedAt string `json:"updated_at"` // 更新时间
 
-	Title    string `json:"title"`    // 文章标题
-	Abstract string `json:"abstract"` // 文章简介
-	Content  string `json:"content"`  // 文章内容
+	Title    string `json:"title"`              // 文章标题
+	Abstract string `json:"abstract"`           // 文章简介
+	Content  string `json:"content,omit(list)"` // 文章内容，在list的时候不要
 
 	LookCount     int `json:"look_count"`     // 浏览量
 	CommentCount  int `json:"comment_count"`  // 评论量
@@ -168,5 +168,18 @@ func (demo ArticleModel) RemoveIndex() error {
 		return err
 	}
 	logrus.Info("删除索引成功")
+	return nil
+}
+
+// Create 添加文章的方法
+func (demo ArticleModel) Create() (err error) {
+	indexResponse, err := global.ESClient.Index().
+		Index(demo.Index()).
+		BodyJson(demo).Do(context.Background())
+	if err != nil {
+		logrus.Error(err.Error())
+		return err
+	}
+	demo.ID = indexResponse.Id
 	return nil
 }
