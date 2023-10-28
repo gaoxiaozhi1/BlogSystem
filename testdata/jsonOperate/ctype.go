@@ -28,10 +28,9 @@ func NewUser() User {
 
 func main() {
 	// 显示有article标签的
-	articleUser := filter.SelectMarshal("article", NewUser())
-	fmt.Println(articleUser.MustJSON())
-	noarticle := filter.Omit("article", NewUser())
-	fmt.Println(noarticle)
+	// 显示有article标签的
+	fmt.Println(filter.Select("article", NewUser()))
+	fmt.Println(filter.Omit("article", NewUser()))
 
 	/*
 		我们定义了一个User结构体，并使用select(scene)标签来指定在哪些场景下我们想要输出这个字段。

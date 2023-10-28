@@ -104,6 +104,7 @@ func (ArticleApi) ArticleCreateView(c *gin.Context) {
 		CreatedAt:    now,
 		UpdatedAt:    now,
 		Title:        cr.Title,
+		KeyWord:      cr.Title,
 		Abstract:     cr.Abstract,
 		Content:      cr.Content,
 		UserID:       userID,
@@ -115,6 +116,12 @@ func (ArticleApi) ArticleCreateView(c *gin.Context) {
 		BannerID:     cr.BannerID,
 		BannerUrl:    bannerUrl,
 		Tags:         cr.Tags,
+	}
+
+	// 应该判断文章标题是否存在,文章标题不能重复
+	if article.ISExistData() {
+		res.FailWithMessage("文章已存在", c)
+		return
 	}
 
 	err = article.Create()

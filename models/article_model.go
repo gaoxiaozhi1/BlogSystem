@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"gvb_server/global"
@@ -11,10 +12,11 @@ import (
 // ArticleModel es存储文章，所以表结构也需要修改
 type ArticleModel struct {
 	ID        string `json:"id"`         // es的id
-	CreatedAt string `json:"date"`       // 创建时间
+	CreatedAt string `json:"created_at"` // 创建时间
 	UpdatedAt string `json:"updated_at"` // 更新时间
 
 	Title    string `json:"title"`              // 文章标题
+	KeyWord  string `json:"keyword,omit(list)"` // 关键字
 	Abstract string `json:"abstract"`           // 文章简介
 	Content  string `json:"content,omit(list)"` // 文章内容，在list的时候不要
 
@@ -55,6 +57,9 @@ func (ArticleModel) Mapping() string {
 		"properties": {
 		  "title": { 
 			"type": "text" 
+		  },
+		  "keyword": { 
+			"type": "keyword" 
 		  },
           "abstract": { 
 			"type": "text" 
@@ -182,4 +187,28 @@ func (demo ArticleModel) Create() (err error) {
 	}
 	demo.ID = indexResponse.Id
 	return nil
+}
+
+// ISExistData 是否存在该文章
+// 这段代码是在检查一个名为ArticleModel的文章模型是否存在于Elasticsearch中。这是通过搜索具有特定标题的文章来完成的。
+// 如果找到至少一篇文章，那么函数就会返回true，表示数据存在。
+// 如果没有找到任何文章，或者在搜索过程中出现错误，函数就会返回false，表示数据不存在或无法确定。
+func (demo ArticleModel) ISExistData() bool {
+	res, err := global.ESClient.
+		Search(demo.Index()).
+		Query(elastic.NewTermQuery("keyword", demo.Title)).
+		Size(1).
+		Do(context.Background())
+	// 这行代码使用全局Elasticsearch客户端执行搜索查询。
+	// 它在特定索引（由demo.Index()指定）中搜索包含特定标题（由demo.Title指定）的文章。
+	// 它只请求一个结果（.Size(1)），然后执行查询（.Do(context.Background())）。
+	if err != nil {
+		logrus.Error(err.Error())
+		return false
+	}
+	// 如果查询结果的总数大于0，这意味着找到了至少一篇匹配的文章，所以返回true。
+	if res.Hits.TotalHits.Value > 0 {
+		return true
+	}
+	return false
 }
