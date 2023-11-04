@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
@@ -19,6 +20,7 @@ type ArticleModel struct {
 	KeyWord  string `json:"keyword,omit(list)" structs:"keyword"` // 关键字
 	Abstract string `json:"abstract" structs:"abstract"`          // 文章简介
 	Content  string `json:"content,omit(list)" structs:"content"` // 文章内容，在list的时候不要
+	//Content string `json:"content,omit(list)"` // 不加structs就无法同步修改es里的东西
 
 	LookCount     int `json:"look_count" structs:"look_count"`         // 浏览量
 	CommentCount  int `json:"comment_count" structs:"comment_count"`   // 评论量
@@ -180,7 +182,7 @@ func (demo ArticleModel) RemoveIndex() error {
 }
 
 // Create 添加文章的方法
-func (demo ArticleModel) Create() (err error) {
+func (demo *ArticleModel) Create() (err error) {
 	indexResponse, err := global.ESClient.Index().
 		Index(demo.Index()).
 		BodyJson(demo).Do(context.Background())
@@ -214,4 +216,19 @@ func (demo ArticleModel) ISExistData() bool {
 		return true
 	}
 	return false
+}
+
+// GetDataByID 根据文章ID查ArticleModel，将其存到demo对象中
+func (demo *ArticleModel) GetDataByID(id string) error {
+	// 这里查用get比较快
+	res, err := global.ESClient.
+		Get().
+		Index(demo.Index()).
+		Id(id).
+		Do(context.Background())
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(res.Source, demo)
+	return err
 }

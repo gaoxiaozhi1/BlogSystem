@@ -9,14 +9,25 @@ import (
 	"gvb_server/service/es_ser"
 )
 
+// ArticleSearchRequest 因为有根据标签搜索的，这就需要传参，但是分页model中没有tag的，所以需要重写一个
+type ArticleSearchRequest struct {
+	models.PageInfo
+	Tag string `json:"tag" form:"tag"` // 查询是的uri中叫tag而不是tags
+}
+
 // ArticleListView 文章列表的后台部分和前端展示页，共同的就是都不显示文章内容，只会显示文章简介
 func (ArticleApi) ArticleListView(c *gin.Context) {
-	var cr models.PageInfo
+	var cr ArticleSearchRequest
 	if err := c.ShouldBindQuery(&cr); err != nil {
 		res.FailWitheCode(res.ArgumentError, c) // 参数错误
 		return
 	}
-	list, count, err := es_ser.CommList(cr.Key, cr.Page, cr.Limit)
+	//fmt.Println(cr.Tag)
+	list, count, err := es_ser.CommList(es_ser.Option{
+		PageInfo: cr.PageInfo,
+		Fields:   []string{"title", "content", "abstract"},
+		Tag:      cr.Tag,
+	})
 	if err != nil {
 		global.Log.Error(err)
 		res.FailWithMessage("查询失败", c)

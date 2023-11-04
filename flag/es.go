@@ -6,7 +6,8 @@ import "gvb_server/models"
 
 // EsCreateIndex es创建索引
 func EsCreateIndex() {
-	models.ArticleModel{}.CreateIndex()
+	//models.ArticleModel{}.CreateIndex()
+	models.FullTextModel{}.CreateIndex()
 }
 
 // EsRemoveIndex es删除索引

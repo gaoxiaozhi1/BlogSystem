@@ -4,26 +4,24 @@ import (
 	"fmt"
 	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
-	"golang.org/x/net/context"
 	"gvb_server/global"
 	"gvb_server/models"
 	"gvb_server/models/ctype"
 	"gvb_server/models/res"
+	"gvb_server/service/es_ser"
 	"time"
 )
 
 type ArticleUpdateRequest struct {
-	Title    string `json:"title"`    // 文章标题
-	Abstract string `json:"abstract"` // 文章简介
-	Content  string `json:"content"`  // 文章内容
-	Category string `json:"category"` // 文章分类
-	Source   string `json:"source"`   // 文章来源
-	Link     string `json:"link"`     // 原文连接
-	// 后面便于不需要关联表查询，可以直接使用
-	BannerID uint        `json:"banner_id"` // 文章封面id
-	Tags     ctype.Array `json:"tags"`      // 文章标签
-	ID       string      `json:"id"`
+	Title    string   `json:"title"`     // 文章标题
+	Abstract string   `json:"abstract"`  // 文章简介
+	Content  string   `json:"content"`   // 文章内容
+	Category string   `json:"category"`  // 文章分类
+	Source   string   `json:"source"`    // 文章来源
+	Link     string   `json:"link"`      // 原文连接
+	BannerID uint     `json:"banner_id"` // 文章封面id
+	Tags     []string `json:"tags"`      // 文章标签
+	ID       string   `json:"id"`
 }
 
 func (ArticleApi) ArticleUpdateView(c *gin.Context) {
@@ -31,7 +29,7 @@ func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 	var cr ArticleUpdateRequest
 	err := c.ShouldBindJSON(&cr)
 	if err != nil {
-		global.Log.Error(err.Error())
+		global.Log.Error(err)
 		res.FailWithError(err, &cr, c)
 		return
 	}
@@ -88,17 +86,33 @@ func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 		}
 		DataMap[k] = v
 	}
+
 	fmt.Println(DataMap)
-	_, err = global.ESClient.
-		Update().
-		Index(models.ArticleModel{}.Index()).
-		Id(cr.ID).
-		Doc(DataMap).
-		Do(context.Background())
+	// 判断文章是否存在， 这里之后article会变成之前的article的值
+	err = article.GetDataByID(cr.ID)
 	if err != nil {
-		logrus.Error(err.Error())
-		res.FailWithMessage("更新失败", c)
+		global.Log.Error(err)
+		res.FailWithMessage("文章不存在", c)
 		return
 	}
+	//fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	//fmt.Println(article)
+
+	err = es_ser.ArticleUpdate(cr.ID, DataMap)
+	if err != nil {
+		global.Log.Error(err)
+		res.FailWithMessage("文章更新失败", c)
+		return
+	}
+
+	// 更新成功，同步数据到全文搜索
+	newArticle, _ := es_ser.CommDetail(cr.ID)
+	fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	fmt.Println(newArticle)
+	if article.Content != newArticle.Content || article.Title != newArticle.Title {
+		es_ser.DeleteFullTextByArticleID(cr.ID)
+		es_ser.AsyncArticleByFullText(cr.ID, newArticle.Title, newArticle.Content)
+	}
+
 	res.OKWithMessage("更新成功", c)
 }
