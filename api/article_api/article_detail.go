@@ -16,8 +16,8 @@ func (ArticleApi) ArticleDetailView(c *gin.Context) {
 		return
 	}
 	// 点进文章详情页，则浏览量++
-	redis_ser.Look(cr.ID)
-	
+	redis_ser.NewArticleLook().Set(cr.ID)
+
 	model, err := es_ser.CommDetail(cr.ID)
 	if err != nil {
 		res.FailWithMessage(err.Error(), c)

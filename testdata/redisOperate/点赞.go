@@ -11,8 +11,8 @@ func main() {
 	core.InitConf()
 	global.Log = core.InitLogger()
 	global.Redis = core.ConnectRedis()
-	redis_ser.Digg("dvO-g4sBc9tzXF2QLZIy")
-	fmt.Println(redis_ser.GetDigg("XXX"))
-	fmt.Println(redis_ser.GetDiggInfo())
+	redis_ser.NewDigg().Set("dvO-g4sBc9tzXF2QLZIy")
+	fmt.Println(redis_ser.NewDigg().Get("dvO-g4sBc9tzXF2QLZIy"))
+	fmt.Println(redis_ser.NewDigg().GetInfo())
 	//redis_ser.DiggClear()
 }

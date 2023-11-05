@@ -37,5 +37,7 @@ func InitRouter() *gin.Engine {
 	MessageRouter(apiRouterGroup)  // 消息管理api
 	ArticleRouter(apiRouterGroup)  // 广告管理api
 	DiggRouter(apiRouterGroup)     // 点赞api
+	CommentRouter(apiRouterGroup)  // 评论api
+	NewsRouter(apiRouterGroup)     // 新闻api
 	return router
 }
