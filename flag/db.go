@@ -37,6 +37,7 @@ func Makemigrations() {
 			&models.MenuBannerModel{},
 			&models.FadeBackModel{},
 			&models.LoginDataModel{},
+			&models.ChatModel{},
 		)
 
 	if err != nil {
