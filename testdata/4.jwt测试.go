@@ -14,7 +14,7 @@ func main() {
 	global.Log = core.InitLogger()
 
 	token, err := jwts.GenToken(jwts.JwtPayLoad{
-		Username: "admin",
+		//Username: "admin",
 		NickName: "admin",
 		Role:     1,
 		UserID:   1,

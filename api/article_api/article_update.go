@@ -87,7 +87,7 @@ func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 		DataMap[k] = v
 	}
 
-	fmt.Println(DataMap)
+	//fmt.Println(DataMap)
 	// 判断文章是否存在， 这里之后article会变成之前的article的值
 	err = article.GetDataByID(cr.ID)
 	if err != nil {
