@@ -56,7 +56,7 @@ func (t *LogFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-// 初始化
+// InitLogger 初始化
 func InitLogger() *logrus.Logger {
 	mLog := logrus.New()                                //新建一个实例
 	mLog.SetOutput(os.Stdout)                           //设置输出类型

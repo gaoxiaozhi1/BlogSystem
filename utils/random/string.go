@@ -1,6 +1,8 @@
 package random
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") // 从中选
 // RandString 随机生成不同长度的字符串

@@ -8,7 +8,7 @@ import (
 	"gvb_server/utils/jwts"
 )
 
-// 用户登录的中间件
+// JwtAuth 用户登录的中间件
 func JwtAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 如何判断是管理员
