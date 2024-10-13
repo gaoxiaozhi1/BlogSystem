@@ -69,7 +69,5 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }} # 用于 SSH 连接的私钥
           script: | # 要在远程服务器上执行的命令序列
-          # 为名为 “app” 的文件添加可执行权限
-              chmod +x app
-          # 运行名为 “app” 的可执行文件，即启动已部署的应用程序
-            ./app  # 运行部署的应用程序
+            chmod +x app
+            ./app
