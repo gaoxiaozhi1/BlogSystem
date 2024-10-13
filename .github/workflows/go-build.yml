@@ -22,7 +22,9 @@ jobs:
 
       - name: Build # 构建和测试代码
         run: | # ls -l app 为显示生成的可执行文件信息（因为上一句生成了可执行文件app）
+          pwd
           cd ./BlogSystem/BlogSystem 
+          pwd
           CGO_ENABLED=0 go build -v -a -ldflags '-extldflags "-static"' -o app ./main.go 
           ls -l app
       - name: Test with the Go CLI
