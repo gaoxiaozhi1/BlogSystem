@@ -18,9 +18,7 @@ jobs:
         run: go version
 
       - name: Check current working directory
-        run: |
-          pwd
-        shell: /bin/bash
+        run: pwd
 
       - name: Build # 构建和测试代码
         run: | # ls -l app 为显示生成的可执行文件信息（因为上一句生成了可执行文件app）
