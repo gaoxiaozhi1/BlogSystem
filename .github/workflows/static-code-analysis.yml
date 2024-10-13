@@ -18,19 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-go@v5
         with:
           go-version: '1.20'
           cache: false
 
-      - name: Show current directory
+      - name: Show current directory # 打印当前工作目录
         run: |
-          pwd            # 打印当前工作目录
-          ls            # 列出当前目录内容
-#          cd gvb_server
-#          pwd            # 打印当前工作目录
-#          ls             # 列出当前目录内容
+          pwd            
+          ls         
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v4
@@ -43,7 +39,7 @@ jobs:
           version: v1.54
 
           # Optional: working directory, useful for monorepos
-          working-directory: gvb_server
+          working-directory: ../BlogSystem
 
           # Optional: golangci-lint command line arguments.
           #
