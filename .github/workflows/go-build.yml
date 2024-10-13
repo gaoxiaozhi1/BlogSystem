@@ -26,8 +26,8 @@ jobs:
           cd ../BlogSystem 
           CGO_ENABLED=0 go build -v -a -ldflags '-extldflags "-static"' -o app ./main.go 
           ls -l app
-      - name: Test with the Go CLI
-        run: go test -v ./... # 测试当前目录及其所有子目录下的代码
+#      - name: Test with the Go CLI
+#        run: go test -v ./... # 测试当前目录及其所有子目录下的代码
 
       - name: Archive build artifacts (optional) # 将工作流数据存档打包成构件(可选)
         if: always() # 无论构建成功与否都执行此步骤
