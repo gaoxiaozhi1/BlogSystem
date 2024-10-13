@@ -24,8 +24,6 @@ jobs:
         run: | # ls -l app 为显示生成的可执行文件信息（因为上一句生成了可执行文件app）
           pwd
           cd ../BlogSystem 
-          pwd
-          ls
           CGO_ENABLED=0 go build -v -a -ldflags '-extldflags "-static"' -o app ./main.go 
           ls -l app
       - name: Test with the Go CLI
@@ -38,42 +36,42 @@ jobs:
           name: blog_system
 #          path: ./gvb_server # 实际的可执行文件路径
           path: BlogSystem/app  # 上传可执行文件作为构建产物
-
-  deploy: # 部署
-    needs: build # 构建完成后才能部署
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifacts # 下载构建的构件
-        uses: actions/download-artifact@v3
-        with: # 这个操作需要的配置参数
-          name: blog_system # 下载的构建产物的名称
-          path: deploy  # 下载构建产物到 deploy 目录
-
-      # 到 deploy 目录验证下载的构件
-      - run: | #  run 部分使用管道符号 “|” 表示以下的内容是多行字符串，保留字符串中的换行和缩进格式，就像原始输入的那样进行传递给命令执行环境
-          pwd
-          cd deploy 
-          pwd
-          ls
-
-      # 在 GitHub Actions 工作流中用于将本地文件部署到服务器的步骤
-      - name: deploy file to server # 部署文件到服务器
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4 # SFTP（Secure File Transfer Protocol，安全文件传输协议）将文件从本地传输到指定的服务器
-        with:
-          username: '${{ secrets.SERVER_USERNAME }}' # 用于连接服务器的用户名，在 GitHub 仓库中定义的加密的秘密变量（secret），在 GitHub 仓库的设置页面中进行定义和管理
-          server: '${{ secrets.SERVER_HOST }}' # 要连接的服务器地址，引用了一个秘密变量
-          ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY_LOACL }}' # 指定用于 SSH 连接的私钥
-          local_path: './deploy/*' # 指定本地要上传的文件路径，当前目录下的 “deploy” 文件夹中的所有文件
-          remote_path: '/root/Download/Deploy/server' # 指定服务器上的目标路径，文件将被上传到这个位置
-          sftpArgs: '-o ConnectTimeout=5' # 给 SFTP 命令的额外参数。这里设置了连接超时时间为 5 秒
-
-      # 在 GitHub Actions 工作流中用于在远程服务器上运行已部署的应用程序
-      - name: Running the project # 运行部署的应用程序
-        uses: appleboy/ssh-action@master # 通过 SSH（Secure Shell）连接到远程服务器并执行一系列命令
-        with:
-          host: ${{ secrets.SERVER_HOST }} # 要连接的远程服务器的地址
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }} # 用于 SSH 连接的私钥
-          script: | # 要在远程服务器上执行的命令序列
-            chmod +x app
-            ./app
+#
+#  deploy: # 部署
+#    needs: build # 构建完成后才能部署
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download build artifacts # 下载构建的构件
+#        uses: actions/download-artifact@v3
+#        with: # 这个操作需要的配置参数
+#          name: blog_system # 下载的构建产物的名称
+#          path: deploy  # 下载构建产物到 deploy 目录
+#
+#      # 到 deploy 目录验证下载的构件
+#      - run: | #  run 部分使用管道符号 “|” 表示以下的内容是多行字符串，保留字符串中的换行和缩进格式，就像原始输入的那样进行传递给命令执行环境
+#          pwd
+#          cd deploy
+#          pwd
+#          ls
+#
+#      # 在 GitHub Actions 工作流中用于将本地文件部署到服务器的步骤
+#      - name: deploy file to server # 部署文件到服务器
+#        uses: wlixcc/SFTP-Deploy-Action@v1.2.4 # SFTP（Secure File Transfer Protocol，安全文件传输协议）将文件从本地传输到指定的服务器
+#        with:
+#          username: '${{ secrets.SERVER_USERNAME }}' # 用于连接服务器的用户名，在 GitHub 仓库中定义的加密的秘密变量（secret），在 GitHub 仓库的设置页面中进行定义和管理
+#          server: '${{ secrets.SERVER_HOST }}' # 要连接的服务器地址，引用了一个秘密变量
+#          ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY_LOACL }}' # 指定用于 SSH 连接的私钥
+#          local_path: './deploy/*' # 指定本地要上传的文件路径，当前目录下的 “deploy” 文件夹中的所有文件
+#          remote_path: '/root/Download/Deploy/server' # 指定服务器上的目标路径，文件将被上传到这个位置
+#          sftpArgs: '-o ConnectTimeout=5' # 给 SFTP 命令的额外参数。这里设置了连接超时时间为 5 秒
+#
+#      # 在 GitHub Actions 工作流中用于在远程服务器上运行已部署的应用程序
+#      - name: Running the project # 运行部署的应用程序
+#        uses: appleboy/ssh-action@master # 通过 SSH（Secure Shell）连接到远程服务器并执行一系列命令
+#        with:
+#          host: ${{ secrets.SERVER_HOST }} # 要连接的远程服务器的地址
+#          username: ${{ secrets.SERVER_USERNAME }}
+#          key: ${{ secrets.SSH_PRIVATE_KEY }} # 用于 SSH 连接的私钥
+#          script: | # 要在远程服务器上执行的命令序列
+#            chmod +x app
+#            ./app
